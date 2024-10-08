@@ -9,7 +9,7 @@ i                       { printf("intdcl "); }
 p                       { printf("print "); }
 [a-eg-hj-z]             { printf("id "); }
 [0-9]+                  { printf("inum "); }
-[0-9]+\.[0-9]+          { printf("fnum "); }
+[0-9]*\.?[0-9]{1,5}     { printf("fnum "); }
 =                       { printf("assign "); }
 \+                      { printf("plus "); }
 %%
