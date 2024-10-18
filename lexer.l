@@ -11,7 +11,7 @@ p                       { printf("print "); }
 [0-9]+                  { printf("inum "); }
 [0-9]*\.?[0-9]{1,5}     { printf("fnum "); }
 =                       { printf("assign "); }
-\+                      { printf("plus "); }
+\+                       { printf("plus "); }
 %%
 
 int main(int argc, char *argv[]) {
