@@ -1,50 +1,26 @@
 %{
-#include <stdio.h>
-FILE *output_file;
+#include "y.tab.h"
+int yywrap(void);
 %}
 
 %%
-\/\/.*                  { fprintf(output_file, "COMMENT"); }
-f                       { fprintf(output_file, "floatdcl "); }
-i                       { fprintf(output_file, "intdcl "); }
-p                       { fprintf(output_file, "print "); }
-[a-eg-hj-z]             { fprintf(output_file, "id "); }
-[0-9]+                  { fprintf(output_file, "inum "); }
-[0-9]*\.?[0-9]{1,5}     { fprintf(output_file, "fnum "); }
-=                       { fprintf(output_file, "assign "); }
-\+                      { fprintf(output_file, "plus "); }
-\*                      { fprintf(output_file, "multiply "); }
-\/                      { fprintf(output_file, "division "); }
-\-                      { fprintf(output_file, "substraction "); }
-[ \t]+                  { fputc(' ', output_file); }
-\n                      { fputc('\n', output_file); }
+\/\/.*                  { /* ignore COMMENT */; }
+f                       { return floatdcl; }
+i                       { return intdcl; }
+p                       { return print; }
+[a-eg-hj-z]             { yylval = strdup(yytext); return id; }
+[0-9]+                  { yylval = atoi(yytext); return inum; }
+[0-9]*\.[0-9]{1,5}      { yylval = atof(yytext); return fnum; }
+=                       { return assign; }
+\+                      { return plus; }
+\*                      { return multiply; }
+\/                      { return division; }
+\-                      { return minus; }
+\n                      { /* ignore end of line */; }
+[ \t]+                  { /* ignore whitespace */; }
+.                       { printf("Unexpected character: %s\n", yytext); }
 %%
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("Usage: %s <input file>\n", argv[0]);
-        return 1;
-    }
-
-    FILE *file = fopen(argv[1], "r");
-    if (!file) {
-        printf("Error opening file: %s\n", argv[1]);
-        return 1;
-    }
-
-    output_file = fopen("tokens.out", "w");
-    if (!output_file) {
-        printf("Error opening output file: tokens.out\n");
-        fclose(file);
-        return 1;
-    }
-
-
-    yyin = file;
-    yylex();
-    fclose(file);
-    fclose(output_file);
-
-    return 0;
+int yywrap(void) {
+    return 1; 
 }
-

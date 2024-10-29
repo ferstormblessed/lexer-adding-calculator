@@ -1,7 +1,9 @@
 all:
+	python3 code_generator.py > FILE
 	lex lexer.l
-	gcc lex.yy.c -o lexer -ll
+	yacc -d parser.y
+	gcc lex.yy.c y.tab.c -o parser
 
 clean:
-	rm -rf *.c
-	rm -rf lexer
+	rm -f lex.yy.c y.tab.c y.tab.h parser FILE
+
